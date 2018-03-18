@@ -1,0 +1,10 @@
+<launch>
+  <!-- Launch the grid map tutorial demo node -->
+  <node pkg="grid_map_yh" type="traversalCheck" name="traversalCheck" output="screen" >
+    <param name="slopeCritical" value="1"/>
+    <param name="stepCritical" value="0.15"/>
+    <param name="stepRadius" value="1"/>
+
+  </node>
+
+</launch>

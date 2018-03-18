@@ -1,0 +1,17 @@
+grid_map_topic: /grid_map
+
+grid_map_visualizations:
+
+  - name: elevation_points
+    type: point_cloud
+    params:
+     layer: elevation
+
+  - name: surface_normals
+    type: vectors
+    params:
+     layer_prefix: normal_
+     position_layer: elevation
+     scale: 0.06
+     line_width: 0.05
+     color: 15600153 # red

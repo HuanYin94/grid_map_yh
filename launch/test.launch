@@ -1,0 +1,23 @@
+<launch>
+  <!-- Launch the grid map tutorial demo node -->
+  <node pkg="grid_map_yh" type="test_demo" name="test" output="screen" >
+  	<param name="size0" value="100"/>
+    <param name="size1" value="100"/>
+    <param name="resolution" value ="1.5"/>
+	<param name="robotX" value="0.0"/>
+    <param name="robotY" value="0.0"/>
+	<param name="robotHeight" value="1.0"/>
+	<param name="loadMapName" value="/home/yh/YQ2/frames/2/DataPoints.vtk"/>	
+	<!--param name="loadMapName" value="/home/yh/binHai.vtk"/-->
+
+  </node>
+  <!-- Launch the grid map visualizer -->
+  <node pkg="grid_map_visualization" type="grid_map_visualization" name="grid_map_visualization" output="screen">
+    <rosparam command="load" file="$(find grid_map_yh)/cfg/test_demo.yaml" />
+  </node>
+
+
+  <!-- Launch RViz with the demo configuration -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find grid_map_yh)/cfg/test.rviz" />
+
+</launch>
