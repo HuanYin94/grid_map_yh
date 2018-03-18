@@ -26,7 +26,6 @@
 */
 
 
-
 using namespace grid_map;
 using namespace std;
 using namespace PointMatcherSupport;
@@ -103,7 +102,6 @@ gridMapping::gridMapping(ros::NodeHandle& n):
     gridPublisher = n.advertise<grid_map_msgs::GridMap>("grid_map", 1, true);
     velodynePublisher = n.advertise<sensor_msgs::PointCloud2>("velodyne_cloud", 2, true);
     mapCloudPublisher = n.advertise<sensor_msgs::PointCloud2>("map_cloud", 2, true);
-    gridPublisher = n.advertise<grid_map_msgs::GridMap>("grid_map", 1, true);
 
     // initilization of filters
     ifstream filterStr(cloudFilterName);
@@ -248,8 +246,6 @@ void gridMapping::gridMapper(DP cloudIn)
     grid_map::GridMap localGridMap({"elevation", "normal_x", "normal_y", "normal_z"});
     localGridMap.setFrameId("robot");
     localGridMap.setGeometry(Length(size0, size1), resolution, Position(0, 0));
-
-//    localGridMap.add("traversability", Matrix::Zero(localGridMap.getSize()(0), localGridMap.getSize()(1)));
 
     // transfer the 3D point cloud to the grid map of elevation / normal_z
     for(int p=0; p<cloudIn.features.cols(); p++)

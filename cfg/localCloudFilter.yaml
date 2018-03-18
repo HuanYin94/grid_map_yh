@@ -16,4 +16,4 @@
     keepNormals: 1
     keepDensities: 0
 - OrientNormalsDataPointsFilter:
-    towardCenter: 1
+    towardCenter: 0

@@ -10,6 +10,8 @@ Panels:
         - /PointCloud22
         - /PointCloud23
         - /Marker1
+        - /GridMap1
+        - /GridMap2
       Splitter Ratio: 0.611465
     Tree Height: 825
   - Class: rviz/Selection
@@ -113,12 +115,12 @@ Visualization Manager:
       Color: 255; 255; 255
       Color Transformer: Intensity
       Decay Time: 0
-      Enabled: true
+      Enabled: false
       Invert Rainbow: true
       Max Color: 255; 255; 255
-      Max Intensity: 0.99996
+      Max Intensity: 0.999672
       Min Color: 0; 0; 0
-      Min Intensity: -2.71094
+      Min Intensity: -1.76425
       Name: PointCloud2
       Position Transformer: XYZ
       Queue Size: 10
@@ -130,14 +132,56 @@ Visualization Manager:
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: false
-      Value: true
+      Value: false
     - Class: rviz/Marker
       Enabled: true
       Marker Topic: /grid_map_visualization/surface_normals
       Name: Marker
       Namespaces:
-        {}
+        vector: true
       Queue Size: 100
+      Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Class: grid_map_rviz_plugin/GridMap
+      Color: 200; 200; 200
+      Color Layer: elevation
+      Color Transformer: ""
+      Enabled: false
+      Height Layer: traversability_slope
+      Height Transformer: Layer
+      History Length: 1
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Max Intensity: 10
+      Min Color: 0; 0; 0
+      Min Intensity: 0
+      Name: GridMap
+      Show Grid Lines: true
+      Topic: /grid_map_travelChecked
+      Unreliable: false
+      Use Rainbow: true
+      Value: false
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Class: grid_map_rviz_plugin/GridMap
+      Color: 200; 200; 200
+      Color Layer: elevation
+      Color Transformer: GridMapLayer
+      Enabled: true
+      Height Layer: elevation
+      Height Transformer: ""
+      History Length: 1
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Max Intensity: 10
+      Min Color: 0; 0; 0
+      Min Intensity: 0
+      Name: GridMap
+      Show Grid Lines: true
+      Topic: /grid_map
+      Unreliable: false
+      Use Rainbow: true
       Value: true
   Enabled: true
   Global Options:
@@ -163,22 +207,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 55.2311
+      Distance: 49.2889
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 20.245
-        Y: -0.182024
-        Z: 5.63099
+        X: 25.1408
+        Y: 16.5181
+        Z: -3.95629
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.9148
+      Pitch: 1.1148
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 0.843621
+      Yaw: 6.20001
     Saved: ~
 Window Geometry:
   Displays:
@@ -196,5 +240,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 1694
-  X: 176
-  Y: 14
+  X: 272
+  Y: 302

@@ -2,10 +2,9 @@
   <!-- Launch the grid map tutorial demo node -->
   <node pkg="grid_map_yh" type="pointsToMap" name="pointsToMap" output="screen" >
   
-    <param name="rangeThreshold" value="20"/>
 	<param name="matchThreshold" value="0.2"/>
-	<param name="size0" value="40"/>
-    <param name="size1" value="40"/>
+	<param name="size0" value="28"/>
+    <param name="size1" value="28"/>
     <param name="resolution" value ="0.5"/>
 	<param name="robotHeight" value="1.0"/>
 	
@@ -16,12 +15,12 @@
 
   </node>
   <!-- Launch the grid map visualizer -->
-  <node pkg="grid_map_visualization" type="grid_map_visualization" name="grid_map_visualization" output="screen">
-    <rosparam command="load" file="$(find grid_map_yh)/cfg/test_demo.yaml" />
-  </node>
+  <!--node pkg="grid_map_visualization" type="grid_map_visualization" name="grid_map_visualization" output="screen">
+    <rosparam command="load" file="$(find grid_map_yh)/cfg/pointsToMap_Viz.yaml" />
+  </node-->
 
 
   <!-- Launch RViz with the demo configuration -->
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find grid_map_yh)/cfg/pointsToMap.rviz" />
+  <!--node name="rviz" pkg="rviz" type="rviz" args="-d $(find grid_map_yh)/cfg/pointsToMap.rviz" /-->
 
 </launch>

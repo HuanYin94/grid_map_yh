@@ -32,8 +32,12 @@ public:
     ~Traversability();
     ros::NodeHandle& n;
 
+    ros::Subscriber gridMapSub;
+    ros::Publisher gridPublisher;
 
-    void process();
+    double slopeCritical;
+
+    void check(const grid_map_msgs::GridMap& gridMapIn);
 
 private:
 
@@ -44,15 +48,47 @@ Traversability::~Traversability()
 {}
 
 Traversability::Traversability(ros::NodeHandle& n):
-    n(n)
+    n(n),
+    slopeCritical(getParam<double>("slopeCritical", 0))
 {
+    gridMapSub = n.subscribe("grid_map", 10, &Traversability::check, this);
+    gridPublisher = n.advertise<grid_map_msgs::GridMap>("grid_map_travelChecked", 1, true);
 
-    this->process();
 }
 
-void Traversability::process()
+void Traversability::check(const grid_map_msgs::GridMap& gridMapIn)
 {
+    cout<<"----------------------------"<<endl;
 
+    // recieve the message
+    grid_map::GridMap localGridMap;
+    GridMapRosConverter::fromMessage(gridMapIn, localGridMap);
+
+    // slope check
+    localGridMap.add("traversability_slope", Matrix::Zero(localGridMap.getSize()(0), localGridMap.getSize()(1)));
+    double slope, slopeMax = 0.0;
+    for (GridMapIterator it(localGridMap);!it.isPastEnd(); ++it)
+    {
+        // Check if there is a surface normal (empty cell).
+        if (!localGridMap.isValid(*it, "normal_z"))
+            continue;
+        // Compute slope from surface normal z
+        slope = acos(localGridMap.at("normal_z", *it));
+
+        if (slope < slopeCritical) {
+          localGridMap.at("traversability_slope", *it) = 1.0 - slope / slopeCritical;
+        }
+        else {
+          localGridMap.at("traversability_slope", *it) = 0.0;
+        }
+
+        if (slope > slopeMax) slopeMax = slope; // slopeMax can be used for cout
+    }
+
+    // Publish grid map & cloud
+    grid_map_msgs::GridMap message;
+    GridMapRosConverter::toMessage(localGridMap, message);
+    gridPublisher.publish(message);
 }
 
 
@@ -64,6 +100,8 @@ int main(int argc, char** argv)
   ros::NodeHandle n;
 
   Traversability traversability(n);
+
+  ros::spin();
 
   return 0;
 }
