@@ -10,10 +10,10 @@
     x: 0
     y: 0
     z: 0
-- SurfaceNormalDataPointsFilter:
-    knn: 5
-    epsilon: 3.33
-    keepNormals: 1
-    keepDensities: 0
-- OrientNormalsDataPointsFilter:
-    towardCenter: 0
+#- SurfaceNormalDataPointsFilter:
+#    knn: 5
+#    epsilon: 0.33
+#    keepNormals: 1
+#    keepDensities: 0
+#- OrientNormalsDataPointsFilter:
+#    towardCenter: 0
