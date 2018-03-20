@@ -15,8 +15,3 @@ grid_map_visualizations:
      scale: 0.06
      line_width: 0.05
      color: 15600153 # red
-
-  - name: slope_points
-    type: point_cloud
-    params:
-     layer: traversability_slope

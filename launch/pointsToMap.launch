@@ -9,8 +9,8 @@
 	<param name="robotHeight" value="1.0"/>
 	
 	<param name="cloudFilterName" value="$(find grid_map_yh)/cfg/localCloudFilter.yaml"/>
-	<param name="loadVelodyneDirName" value="/media/yh/YH1/DataSet/YQ21/2017_03_09/2017_03_09_drive_0004_sync/velodyne_points/PC090004VTK/"/>	
-	<param name="loadPoseName" value="/media/yh/YH1/DataSet/YQ21/2017_03_09/2017_03_09_drive_0004_sync/icp/icp.txt"/>
+	<param name="loadVelodyneDirName" value="/media/yh/YH/DataSet/YQ21/2017_03_09/2017_03_09_drive_0004_sync/velodyne_points/PC090004VTK/"/>	
+	<param name="loadPoseName" value="/media/yh/YH/DataSet/YQ21/2017_03_09/2017_03_09_drive_0004_sync/icp/icp.txt"/>
 
 
   </node>

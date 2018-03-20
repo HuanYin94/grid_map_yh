@@ -6,10 +6,10 @@
     vSizeY : 0.2 
     vSizeZ : 0.2 
     useCentroid : 1
-- ObservationDirectionDataPointsFilter:
-    x: 0
-    y: 0
-    z: 0
+#- ObservationDirectionDataPointsFilter:
+#    x: 0
+#    y: 0
+#    z: 0
 #- SurfaceNormalDataPointsFilter:
 #    knn: 5
 #    epsilon: 0.33

@@ -12,6 +12,9 @@ Panels:
         - /Marker1
         - /GridMap1
         - /GridMap2
+        - /Map1
+        - /Map1/Position1
+        - /Map1/Orientation1
       Splitter Ratio: 0.611465
     Tree Height: 734
   - Class: rviz/Selection
@@ -32,7 +35,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: ""
+    SyncSource: PointCloud2
 Visualization Manager:
   Class: ""
   Displays:
@@ -118,9 +121,9 @@ Visualization Manager:
       Enabled: false
       Invert Rainbow: true
       Max Color: 255; 255; 255
-      Max Intensity: 0.999662
+      Max Intensity: 0.99946
       Min Color: 0; 0; 0
-      Min Intensity: -1.92819
+      Min Intensity: -1.71213
       Name: PointCloud2
       Position Transformer: XYZ
       Queue Size: 10
@@ -145,10 +148,10 @@ Visualization Manager:
       Autocompute Intensity Bounds: true
       Class: grid_map_rviz_plugin/GridMap
       Color: 200; 200; 200
-      Color Layer: elevation
-      Color Transformer: ""
-      Enabled: false
-      Height Layer: traversability_slope
+      Color Layer: traversability_step
+      Color Transformer: IntensityLayer
+      Enabled: true
+      Height Layer: elevation
       Height Transformer: Layer
       History Length: 1
       Invert Rainbow: false
@@ -161,7 +164,7 @@ Visualization Manager:
       Topic: /grid_map_travelChecked
       Unreliable: false
       Use Rainbow: true
-      Value: false
+      Value: true
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Class: grid_map_rviz_plugin/GridMap
@@ -182,6 +185,15 @@ Visualization Manager:
       Topic: /grid_map
       Unreliable: false
       Use Rainbow: true
+      Value: false
+    - Alpha: 0.7
+      Class: rviz/Map
+      Color Scheme: map
+      Draw Behind: false
+      Enabled: false
+      Name: Map
+      Topic: /occuMap
+      Unreliable: false
       Value: false
   Enabled: true
   Global Options:
@@ -207,22 +219,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 138.506
+      Distance: 250.699
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -2.66969
-        Y: 16.9325
-        Z: -18.5106
+        X: 40.5431
+        Y: 44.8031
+        Z: -49.9811
       Name: Current View
       Near Clip Distance: 0.01
       Pitch: 1.5698
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 1.52683
+      Yaw: 0.93683
     Saved: ~
 Window Geometry:
   Displays:
@@ -240,5 +252,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 1590
-  X: 318
-  Y: 50
+  X: 169
+  Y: 297

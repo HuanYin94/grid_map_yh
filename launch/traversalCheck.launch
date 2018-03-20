@@ -5,7 +5,9 @@
     <param name="slopeCritical" value="1"/>
 
     <param name="stepCritical" value="0.15"/>
-    <param name="stepRadius" value="1"/>
+    <param name="stepRadiusFirst" value="2.0"/>
+    <param name="stepRadiusSecond" value="2.0"/>
+    <param name="cellsCritical" value="8.0"/>s
 
   </node>
 
