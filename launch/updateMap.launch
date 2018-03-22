@@ -1,0 +1,25 @@
+<launch>
+  <!-- Launch the grid map tutorial demo node -->
+  <node pkg="grid_map_yh" type="updateMap" name="updateMap" output="screen" >
+  
+	<param name="size0" value="28"/>
+    <param name="size1" value="28"/>
+    <param name="resolution" value ="0.5"/>
+	<param name="robotHeight" value="1,0"/>
+	
+	<param name="cloudFilterName" value="$(find grid_map_yh)/cfg/localCloudFilter.yaml"/>
+	<param name="loadVelodyneDirName" value="/media/yh/YH/DataSet/YQ21/2017_03_09/2017_03_09_drive_0004_sync/velodyne_points/PC090004VTK/"/>	
+	<param name="loadPoseName" value="/media/yh/YH/DataSet/YQ21/2017_03_09/2017_03_09_drive_0004_sync/icp/icp.txt"/>
+
+
+  </node>
+  <!-- Launch the grid map visualizer -->
+  <!--node pkg="grid_map_visualization" type="grid_map_visualization" name="grid_map_visualization" output="screen">
+    <rosparam command="load" file="$(find grid_map_yh)/cfg/pointsToMap_Viz.yaml" />
+  </node-->
+
+
+  <!-- Launch RViz with the demo configuration -->
+  <!--node name="rviz" pkg="rviz" type="rviz" args="-d $(find grid_map_yh)/cfg/pointsToMap.rviz" /-->
+
+</launch>

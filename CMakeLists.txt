@@ -85,6 +85,11 @@ add_executable(
   src/laserToMap.cpp
 )
 
+add_executable(
+  updateMap
+  src/updateMap.cpp
+)
+
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(
@@ -111,9 +116,15 @@ target_link_libraries(
   ${libpointmatcher_LIBRARIES}
 )
 
+target_link_libraries(
+  updateMap
+  ${catkin_LIBRARIES}
+  ${libpointmatcher_LIBRARIES}
+)
+
 # Mark executables and/or libraries for installation
 install(
-  TARGETS test_demo pointsToMap traversalCheck laserToMap
+  TARGETS test_demo pointsToMap traversalCheck laserToMap updateMap
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
