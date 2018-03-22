@@ -192,7 +192,6 @@ void Traversability::check(const grid_map_msgs::GridMap& gridMapIn)
     GridMapRosConverter::toMessage(localGridMap, message);
     gridPublisher.publish(message);
 
-
     // convert to 2D-costmap and publish
     GridMapRosConverter::toOccupancyGrid(localGridMap, "traversability_step", 0.0, 1.0, occuMap);
     occuMapPublisher.publish(occuMap);
