@@ -150,7 +150,7 @@ Visualization Manager:
       Color: 200; 200; 200
       Color Layer: traversability_step
       Color Transformer: IntensityLayer
-      Enabled: false
+      Enabled: true
       Height Layer: elevation
       Height Transformer: Layer
       History Length: 1
@@ -164,14 +164,14 @@ Visualization Manager:
       Topic: /grid_map_travelChecked
       Unreliable: false
       Use Rainbow: true
-      Value: false
+      Value: true
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Class: grid_map_rviz_plugin/GridMap
       Color: 200; 200; 200
       Color Layer: elevation
       Color Transformer: GridMapLayer
-      Enabled: true
+      Enabled: false
       Height Layer: elevation
       Height Transformer: ""
       History Length: 1
@@ -185,7 +185,7 @@ Visualization Manager:
       Topic: /grid_map
       Unreliable: false
       Use Rainbow: true
-      Value: true
+      Value: false
     - Alpha: 0.7
       Class: rviz/Map
       Color Scheme: map
@@ -219,22 +219,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 217.275
+      Distance: 133.885
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 15.265
-        Y: 3.10702
-        Z: -49.9325
+        X: 23.1243
+        Y: 5.793
+        Z: -69.6501
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 1.3998
+      Pitch: 1.5698
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 0.93183
+      Yaw: 1.55001
     Saved: ~
 Window Geometry:
   Displays:
@@ -252,5 +252,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 1590
-  X: 159
-  Y: 105
+  X: 300
+  Y: 45

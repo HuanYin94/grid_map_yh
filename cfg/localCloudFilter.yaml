@@ -1,6 +1,6 @@
 - MaxDistDataPointsFilter:
     dim: -1
-    maxDist: 21
+    maxDist: 15
 - VoxelGridDataPointsFilter:
     vSizeX : 0.2 
     vSizeY : 0.2 

@@ -166,6 +166,9 @@ void gridMapping::gridMapper(DP cloudIn)
         if (!localGridMap.getIndex(position, index) || cloudIn.features(2, p)>robotHeight)
             continue;   // Skip this point if it does not lie within the elevation map and above the robot Height
 
+//        if(cloudIn.features(2, p) < 0)
+//            cloudIn.features(2, p) = 0;
+
         if (!localGridMap.isValid(index))
         {
             // groove or hill

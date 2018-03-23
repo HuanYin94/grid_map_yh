@@ -21,7 +21,7 @@
 
 
 /*
- *   cumulation -> gridMapper -> # TODO travelSearch (another node)-> # TODO pathPlanning (another node)
+ *   update -> gridMapper -> # TODO travelSearch (another node)-> # TODO pathPlanning (another node)
  *
 */
 
@@ -47,7 +47,6 @@ public:
 
     ros::Publisher gridPublisher;
     ros::Publisher velodynePublisher;
-    ros::Publisher mapCloudPublisher;
 
     double size0;
     double size1;
@@ -55,28 +54,18 @@ public:
     double robotHeight;
     string loadVelodyneDirName;
     string loadPoseName;
-    string cloudFilterName;
     double velodyneHeight;
-
-    PM::DataPointsFilters cloudFilters;
-
-    double matchThreshold;
 
     vector<vector<double>> robotPoses;
     tf::TransformBroadcaster tfBroadcaster;
 
     PM::TransformationParameters TrobotToGlobal;
-    PM::TransformationParameters TrobotLastToGlobal;
-    PM::TransformationParameters TrobotLastToRobot;
-    PM::TransformationParameters TrobotToRobotLast;
 
-
-    DP localMapCloud;
-    shared_ptr<NNS> localMapNNS;
+    DP velodyneCloud;
 
     unique_ptr<PM::Transformation> transformation;
 
-    void cumulation(int index);
+    void update(int index);
 
     void gridMapper(DP cloudIn);
 
@@ -94,20 +83,13 @@ gridMapping::gridMapping(ros::NodeHandle& n):
     size1(getParam<double>("size1", 0)),
     resolution(getParam<double>("resolution", 0)),
     robotHeight(getParam<double>("robotHeight", 0)),
-    matchThreshold(getParam<double>("matchThreshold", 0)),
     loadVelodyneDirName(getParam<string>("loadVelodyneDirName", ".")),
     loadPoseName(getParam<string>("loadPoseName", ".")),
-    cloudFilterName(getParam<string>("cloudFilterName", ".")),
     transformation(PM::get().REG(Transformation).create("RigidTransformation")),
     velodyneHeight(getParam<double>("velodyneHeight", 0))
 {
     gridPublisher = n.advertise<grid_map_msgs::GridMap>("grid_map", 1, true);
     velodynePublisher = n.advertise<sensor_msgs::PointCloud2>("velodyne_cloud", 2, true);
-    mapCloudPublisher = n.advertise<sensor_msgs::PointCloud2>("map_cloud", 2, true);
-
-    // initilization of filters
-    ifstream filterStr(cloudFilterName);
-    cloudFilters = PM::DataPointsFilters(filterStr);
 
     // read initial transformation
     int x, y;
@@ -127,14 +109,15 @@ gridMapping::gridMapping(ros::NodeHandle& n):
     }
     in.close();
 
+    // one by one frame
     for(int index=0; index<3000; index++)
     {
-        this->cumulation(index);
+        this->update(index);
     }
 
 }
 
-void gridMapping::cumulation(int index)
+void gridMapping::update(int index)
 {
 
     // loading velodyne
@@ -147,8 +130,7 @@ void gridMapping::cumulation(int index)
         cout<<"-----------------------------------------------------------------------"<<endl;
         cout<<veloName<<endl;
     }
-    DP velodyneCloud = DP::load(veloName);
-
+    velodyneCloud = DP::load(veloName);
 
     // load poses
     // Transformation's transformation
@@ -163,89 +145,19 @@ void gridMapping::cumulation(int index)
     tfBroadcaster.sendTransform(PointMatcher_ros::eigenMatrixToStampedTransform<float>(TrobotToGlobal, "global", "robot", ros::Time::now()));
     velodynePublisher.publish(PointMatcher_ros::pointMatcherCloudToRosMsg<float>(velodyneCloud, "robot", ros::Time::now()));
 
-    double t0 = ros::Time::now().toSec();
 
-    // if needs initiliazation
-    if(index==0)
-    {
-        // copy the velodyne to localMapCloud
-        localMapCloud = velodyneCloud;
-        // transformation initilization
-        TrobotLastToGlobal = TrobotToGlobal;   // simple, one word
-        return;
-    }
-    // Sth. wrong? for transformation
-    // right now
-    TrobotLastToRobot = TrobotToGlobal.inverse() * TrobotLastToGlobal;
-    transformation->correctParameters(TrobotLastToRobot);
-    if(transformation->checkParameters(TrobotLastToRobot))
-    {
-        localMapCloud = transformation->compute(localMapCloud, TrobotLastToRobot);
-    }
-
-    // accumulation of points, using kd match
-    PM::Matches matches_velodyne(
-        Matches::Dists(1, velodyneCloud.features.cols()),
-        Matches::Ids(1, velodyneCloud.features.cols())
-    );
-
-    // update the kd-tree of local map cloud
-    localMapNNS.reset(NNS::create(localMapCloud.features, localMapCloud.features.rows() - 1, NNS::KDTREE_LINEAR_HEAP, NNS::TOUCH_STATISTICS));
-    // search
-    localMapNNS->knn(velodyneCloud.features, matches_velodyne.ids, matches_velodyne.dists, 1, 0);
-
-    // search for the update
-    double dist;
-    vector<int> addIndexVector;
-    for(int p=0; p<velodyneCloud.features.cols(); p++)
-    {
-        dist = sqrt(matches_velodyne.dists(0, p));
-        if(dist>matchThreshold)
-            addIndexVector.push_back(p);
-    }
-
-    // rip the cloud according to the matching distance of velodyne cloud
-    // faster than concatenate the velodyne directly
-    DP concatenateCloud = velodyneCloud.createSimilarEmpty();
-    int count = 0;
-    for(int v=0; v<addIndexVector.size(); v++)
-    {
-        concatenateCloud.setColFrom(count, velodyneCloud, addIndexVector.at(v));
-        count++;
-    }
-    concatenateCloud.conservativeResize(count);
-
-    // update the localMapCloud
-    localMapCloud.concatenate(concatenateCloud);
-    // filter and add des! vital!
-    cloudFilters.apply(localMapCloud);
-
-    mapCloudPublisher.publish(PointMatcher_ros::pointMatcherCloudToRosMsg<float>(localMapCloud, "robot", ros::Time::now()));
-
-    // one by one pose
-    TrobotLastToGlobal = TrobotToGlobal;
-
-    double t1 = ros::Time::now().toSec();
-    cout<<"Cumulation Time:     "<<t1-t0<<endl;
-
-    // next for elevation mapping
-    this->gridMapper(localMapCloud);
-
-    double t2 = ros::Time::now().toSec();
-    cout<<"Gridding Time:       "<<t2-t1<<endl;
+    this->gridMapper(velodyneCloud);
 
 }
 
 void gridMapping::gridMapper(DP cloudIn)
 {
-
-    // create the grid map
-    // robot centric
-    grid_map::GridMap localGridMap({"elevation", "normal_x", "normal_y", "normal_z"});
+    grid_map::GridMap localGridMap;
     localGridMap.setFrameId("robot");
     localGridMap.setGeometry(Length(size0, size1), resolution, Position(0, 0));
     localGridMap.add("elevation", -velodyneHeight);
     localGridMap.add("update", 0);
+
 
     // transfer the 3D point cloud to the grid map of elevation / normal_z
     for(int p=0; p<cloudIn.features.cols(); p++)
