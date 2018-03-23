@@ -2,9 +2,9 @@
     dim: -1
     maxDist: 15
 - VoxelGridDataPointsFilter:
-    vSizeX : 0.2 
-    vSizeY : 0.2 
-    vSizeZ : 0.2 
+    vSizeX : 0.1 
+    vSizeY : 0.1 
+    vSizeZ : 0.1 
     useCentroid : 1
 #- ObservationDirectionDataPointsFilter:
 #    x: 0

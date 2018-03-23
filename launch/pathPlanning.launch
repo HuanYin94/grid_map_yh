@@ -1,6 +1,6 @@
 <launch>
   <!-- Launch the grid map tutorial demo node -->
-  <node pkg="grid_map_yh" type="updateMap" name="updateMap" output="screen" >
+  <node pkg="grid_map_yh" type="pathPlanning" name="pathPlanning" output="screen" >
   
 	<param name="size0" value="28"/>
     <param name="size1" value="28"/>
