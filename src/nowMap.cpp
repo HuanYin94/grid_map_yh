@@ -110,7 +110,7 @@ gridMapping::gridMapping(ros::NodeHandle& n):
     in.close();
 
     // one by one frame
-    for(int index=0; index<3000; index++)
+    for(int index=0; index<1; index++)
     {
         this->update(index);
     }
