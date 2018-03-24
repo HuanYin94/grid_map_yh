@@ -31,35 +31,38 @@ pP::AStar::AStar(ros::NodeHandle& n):
     resolution(getParam<double>("resolution", 0)),
     enableCross(getParam<bool>("enableCross", 0))
 {
-    gridSize = size0/resolution;
+    mapSize = size0/resolution;
     directionCount = enableCross ? 8 : 4;
-    source = {gridSize/2, gridSize/2};
-    target = {gridSize/2, gridSize};
-
-    cout<<"directionCount:  "<<directionCount<<endl;
+    source = {mapSize/2, mapSize/2};
+    target = {mapSize/2, mapSize};
 
     occuMapSub = n.subscribe("occuMap", 10, &AStar::pathPlanner, this);
+    pathPointsPub = n.advertise<nav_msgs::Path>("pathPoints", 2, true);
 
 }
 
 void pP::AStar::pathPlanner(const nav_msgs::OccupancyGrid& occuMapIn)
 {
+    cout<<"-----------------------------------"<<endl;
+
     // build the map: occus & frees
     int count = 0;
-    for(int m=0; m<gridSize; m++)
+    for(int m=0; m<mapSize; m++)
     {
-        for(int n=0; n<gridSize; n++)
+        for(int n=0; n<mapSize; n++)
         {
             int a = occuMapIn.data.at(count);
             count++;
+//            cout<<a<<"  ";
 
             //turns to 2D coordinate in a plane
-            Vec2i coord = {gridSize-m, gridSize-n};
+            Vec2i coord = {mapSize-m, n};
 
             if(a > 0)
                 occus.push_back(coord);
 
         }
+//        cout<<""<<endl;
     }
 
     //start to find the path
@@ -111,25 +114,27 @@ void pP::AStar::pathPlanner(const nav_msgs::OccupancyGrid& occuMapIn)
 
     }
 
-    std::vector<Vec2i> pathNodes;
+    std::vector<Vec2i> path;
     while (currentNode != nullptr)
     {
-        pathNodes.push_back(currentNode->coordinates);
+        path.push_back(currentNode->coordinates);
         currentNode = currentNode->parent;
     }
 
-    //cout
-    for(int i=0; i<pathNodes.size(); i++)
-    {
-        cout<<i<<"  "<<pathNodes.at(i).x<<"    "<<pathNodes.at(i).y<<endl;
-    }
+
+//    this->releaseNodes(nextNodes);
+//    this->releaseNodes(pathNodes);
+    nextNodes.clear();
+    pathNodes.clear();
+
+    this->drawPath(path);
 
 }
 
 bool pP::AStar::isCollision(Vec2i coord)
 {
-    if( abs(coord.x) >= gridSize ||
-        abs(coord.y) >= gridSize ||
+    if( coord.x > mapSize || coord.x <= 0 ||
+        coord.y > mapSize || coord.y <= 0 ||
         std::find(occus.begin(), occus.end(), coord) != occus.end())
         return true;
     else
@@ -164,6 +169,29 @@ void pP::AStar::releaseNodes(std::set<Node*>& nodes)
         delete *it;
         it = nodes.erase(it);
     }
+}
+
+void pP::AStar::drawPath(std::vector<Vec2i> path)
+{
+    nav_msgs::Path pathShow;
+    pathShow.header.frame_id = "robot";
+    pathShow.header.stamp = ros::Time::now();
+
+    // Coord-transform, resolution added
+    for(int i=0; i<path.size(); i++)
+    {
+        geometry_msgs::PoseStamped pose;
+        pose.header.frame_id = pathShow.header.frame_id;
+        pose.header.stamp = pathShow.header.stamp;
+        pose.pose.position.x = (path.at(i).x - mapSize/2)*resolution;
+        pose.pose.position.y = (path.at(i).y - mapSize/2)*resolution;
+        pose.pose.position.z = 0;
+        pose.pose.orientation = tf::createQuaternionMsgFromYaw(0);  // always 0;
+        pathShow.poses.push_back(pose);
+    }
+
+    pathPointsPub.publish(pathShow);
+
 }
 
 

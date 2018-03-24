@@ -9,11 +9,13 @@
 
 #include "tf/transform_broadcaster.h"
 #include "pointmatcher_ros/get_params_from_server.h"
+#include <geometry_msgs/PoseStamped.h>
+#include <nav_msgs/Path.h>
 
 #define checkValue -999
 
 /*
- *   update -> gridMapper -> travelSearch (another node)-> # TODO AStar (another node)
+ *   update -> gridMapper -> travelSearch (another node)-> AStar (another node)
  *
 */
 namespace pP
@@ -49,6 +51,7 @@ namespace pP
 
         ros::Subscriber occuMapSub;
         nav_msgs::OccupancyGrid occuMap;
+        ros::Publisher pathPointsPub;
 
         std::vector<Vec2i> occus;
 
@@ -66,7 +69,7 @@ namespace pP
 
         double size0;
         double resolution;
-        int gridSize;
+        int mapSize;
 
         void pathPlanner(const nav_msgs::OccupancyGrid& occuMapIn);
         uint euclidean(Vec2i source, Vec2i target);
@@ -74,6 +77,7 @@ namespace pP
         Node* findNodeOnList(std::set<Node*>& nodes, Vec2i coord);
         Vec2i getDelta(Vec2i source, Vec2i target);
         void releaseNodes(std::set<Node*>& nodes);
+        void drawPath(std::vector<Vec2i> path);
 
     private:
 
