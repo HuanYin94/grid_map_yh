@@ -2,7 +2,8 @@
   <!-- Launch the grid map tutorial demo node -->
   <node pkg="grid_map_yh" type="pathPlanning" name="pathPlanning" output="screen" >
   
-
+	<param name="size0" value="15"/>
+    <param name="resolution" value ="0.5"/>
 
 
   </node>

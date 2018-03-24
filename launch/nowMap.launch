@@ -4,7 +4,7 @@
   
 	<param name="size0" value="15"/>
     <param name="size1" value="15"/>
-    <param name="resolution" value ="0.4"/>
+    <param name="resolution" value ="0.5"/>
 	<param name="robotHeight" value="1.0"/>
 	<param name="velodyneHeight" value="0.5"/>
 	

@@ -7,6 +7,8 @@
 #include <fstream>
 
 #include "tf/transform_broadcaster.h"
+#include "pointmatcher_ros/get_params_from_server.h"
+
 
 #define checkValue -999
 
@@ -49,6 +51,10 @@ public:
     std::vector<Vec2i> occus;
     std::vector<Vec2i> frees;
 
+    double size0;
+    double resolution;
+    int gridSize;
+
     void pathPlanner(const nav_msgs::OccupancyGrid& occuMapIn);
     void heuristic(Vec2i source, Vec2i target);
 
@@ -61,30 +67,37 @@ AStar::~AStar()
 {}
 
 AStar::AStar(ros::NodeHandle& n):
-    n(n)
+    n(n),
+    size0(getParam<double>("size0", 0)),
+    resolution(getParam<double>("resolution", 0))
 {
+    gridSize = size0/resolution;
     occuMapSub = n.subscribe("occuMap", 10, &AStar::pathPlanner, this);
 
 }
 
 void AStar::pathPlanner(const nav_msgs::OccupancyGrid& occuMapIn)
 {
-    cout<<occuMapIn.data.size()<<endl;
-    for(int i=0; i<occuMapIn.data.size(); i++)
-    {
-
-
-    }
-
+    // build the map: occus & frees
     int count = 0;
-    for(int m=0; m<38; m++)
+    for(int m=0; m<gridSize; m++)
     {
-        for(int n=0; n<38; n++)
+        for(int n=0; n<gridSize; n++)
         {
-            cout<<occuMapIn.data.at(count);count++;
+            int a = occuMapIn.data.at(count);
+            count++;
+
+            Vec2i coord = {m, n};
+
+            if(a > 0)
+                occus.push_back(coord);
+            else
+                frees.push_back(coord);
+
         }
-        cout<<""<<endl;
     }
+
+
 
 }
 

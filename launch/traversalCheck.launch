@@ -12,11 +12,11 @@ s
   </node>
 
   <!-- Launch the grid map visualizer -->
-  <!--node pkg="grid_map_visualization" type="grid_map_visualization" name="grid_map_visualization" output="screen">
+  <node pkg="grid_map_visualization" type="grid_map_visualization" name="grid_map_visualization" output="screen">
     <rosparam command="load" file="$(find grid_map_yh)/cfg/traversalCheck_Viz.yaml" />
-  </node-->
+  </node>
 
   <!-- Launch RViz with the demo configuration -->
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find grid_map_yh)/cfg/pointsToMap.rviz" />
+  <!--node name="rviz" pkg="rviz" type="rviz" args="-d $(find grid_map_yh)/cfg/pointsToMap.rviz" /-->
 
 </launch>
