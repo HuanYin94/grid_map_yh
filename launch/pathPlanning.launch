@@ -4,6 +4,7 @@
   
 	<param name="size0" value="15"/>
     <param name="resolution" value ="0.5"/>
+    <param name="enableCross" value="false"/>
 
 
   </node>

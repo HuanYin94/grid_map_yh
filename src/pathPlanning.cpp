@@ -1,82 +1,48 @@
-#include <ros/ros.h>
-#include <grid_map_ros/grid_map_ros.hpp>
-#include <vector>
-#include <string>
-#include <cmath>
-#include <limits>
-#include <fstream>
+#include "pathPlanning.hpp"
 
-#include "tf/transform_broadcaster.h"
-#include "pointmatcher_ros/get_params_from_server.h"
-
-
-#define checkValue -999
-
-
-/*
- *   update -> gridMapper -> travelSearch (another node)-> # TODO AStar (another node)
- *
-*/
-
-using namespace grid_map;
-using namespace std;
-
-struct Vec2i
+bool pP::Vec2i::operator == (const Vec2i& coordinates_)
 {
-    int x, y;
-    bool operator == (const Vec2i& coordinates_);
-};
+    return (x == coordinates_.x && y == coordinates_.y);
+}
 
-struct Node
+pP::Vec2i operator + (const pP::Vec2i& left_, const pP::Vec2i& right_)
 {
-    uint G, H;
-    Vec2i coordinates;
-    Node *parent;
+    return{ left_.x + right_.x, left_.y + right_.y };
+}
 
-    Node(Vec2i coord_, Node *parent_ = nullptr);
-    uint getScore();
-};
-
-class AStar
+pP::uint pP::Node::getScore()
 {
+    return G + H;
+}
 
-public:
-    AStar(ros::NodeHandle &n);
-    ~AStar();
-    ros::NodeHandle& n;
+pP::Node::Node(Vec2i coordinates_, Node *parent_)
+{
+    parent = parent_;
+    coordinates = coordinates_;
+    G = H = 0;
+}
 
-    ros::Subscriber occuMapSub;
-    nav_msgs::OccupancyGrid occuMap;
-
-    std::vector<Vec2i> occus;
-    std::vector<Vec2i> frees;
-
-    double size0;
-    double resolution;
-    int gridSize;
-
-    void pathPlanner(const nav_msgs::OccupancyGrid& occuMapIn);
-    void heuristic(Vec2i source, Vec2i target);
-
-private:
-
-
-};
-
-AStar::~AStar()
+pP::AStar::~AStar()
 {}
 
-AStar::AStar(ros::NodeHandle& n):
+pP::AStar::AStar(ros::NodeHandle& n):
     n(n),
     size0(getParam<double>("size0", 0)),
-    resolution(getParam<double>("resolution", 0))
+    resolution(getParam<double>("resolution", 0)),
+    enableCross(getParam<bool>("enableCross", 0))
 {
     gridSize = size0/resolution;
+    directionCount = enableCross ? 8 : 4;
+    source = {gridSize/2, gridSize/2};
+    target = {gridSize/2, gridSize};
+
+    cout<<"directionCount:  "<<directionCount<<endl;
+
     occuMapSub = n.subscribe("occuMap", 10, &AStar::pathPlanner, this);
 
 }
 
-void AStar::pathPlanner(const nav_msgs::OccupancyGrid& occuMapIn)
+void pP::AStar::pathPlanner(const nav_msgs::OccupancyGrid& occuMapIn)
 {
     // build the map: occus & frees
     int count = 0;
@@ -87,21 +53,118 @@ void AStar::pathPlanner(const nav_msgs::OccupancyGrid& occuMapIn)
             int a = occuMapIn.data.at(count);
             count++;
 
-            Vec2i coord = {m, n};
+            //turns to 2D coordinate in a plane
+            Vec2i coord = {gridSize-m, gridSize-n};
 
             if(a > 0)
                 occus.push_back(coord);
-            else
-                frees.push_back(coord);
 
         }
     }
 
+    //start to find the path
+    // robot start at the centric
+    Node *currentNode  = nullptr;
+    nextNodes.insert(new Node(source));
 
+    while(!nextNodes.empty())
+    {
+        currentNode = *nextNodes.begin();
+        for (auto node : nextNodes) {
+            if (node->getScore() <= currentNode->getScore()) {
+                currentNode = node;
+            }
+        }
+
+        if (currentNode->coordinates == target) {
+            break;
+        }
+
+        pathNodes.insert(currentNode);
+        nextNodes.erase(std::find(nextNodes.begin(), nextNodes.end(), currentNode));
+
+        for (uint i = 0; i < directionCount; ++i)
+        {
+            Vec2i newCoord(currentNode->coordinates + direction[i]);
+            if (isCollision(newCoord) ||
+                findNodeOnList(pathNodes, newCoord))
+            {
+                continue;
+            }
+
+            uint totalCost = currentNode->G + ((i < 4) ? 10 : 14);
+
+            Node *successor = findNodeOnList(nextNodes, newCoord);
+            if (successor == nullptr)
+            {
+                successor = new Node(newCoord, currentNode);
+                successor->G = totalCost;
+                successor->H = euclidean(successor->coordinates, target);
+                nextNodes.insert(successor);
+            }
+            else if (totalCost < successor->G)
+            {
+                successor->parent = currentNode;
+                successor->G = totalCost;
+            }
+        }
+
+    }
+
+    std::vector<Vec2i> pathNodes;
+    while (currentNode != nullptr)
+    {
+        pathNodes.push_back(currentNode->coordinates);
+        currentNode = currentNode->parent;
+    }
+
+    //cout
+    for(int i=0; i<pathNodes.size(); i++)
+    {
+        cout<<i<<"  "<<pathNodes.at(i).x<<"    "<<pathNodes.at(i).y<<endl;
+    }
 
 }
 
+bool pP::AStar::isCollision(Vec2i coord)
+{
+    if( abs(coord.x) >= gridSize ||
+        abs(coord.y) >= gridSize ||
+        std::find(occus.begin(), occus.end(), coord) != occus.end())
+        return true;
+    else
+        return false;
+}
 
+pP::Node* pP::AStar::findNodeOnList(std::set<Node*>& nodes, Vec2i coord)
+{
+    for (auto node : nodes) {
+        if (node->coordinates == coord) {
+            return node;
+        }
+    }
+    return nullptr;
+}
+
+pP::Vec2i pP::AStar::getDelta(Vec2i source, Vec2i target)
+{
+    return{ abs(source.x - target.x),  abs(source.y - target.y) };
+}
+
+pP::uint pP::AStar::euclidean(Vec2i source, Vec2i target)
+{
+    auto delta = std::move(getDelta(source, target));
+    return static_cast<uint>(10 * sqrt(pow(delta.x, 2) + pow(delta.y, 2)));
+}
+
+void pP::AStar::releaseNodes(std::set<Node*>& nodes)
+{
+    for (auto it = nodes.begin(); it != nodes.end();)
+    {
+        delete *it;
+        it = nodes.erase(it);
+    }
+}
 
 
 int main(int argc, char** argv)
@@ -110,7 +173,7 @@ int main(int argc, char** argv)
 
   ros::NodeHandle n;
 
-  AStar Astar(n);
+  pP::AStar Astar(n);
 
   ros::spin();
 
