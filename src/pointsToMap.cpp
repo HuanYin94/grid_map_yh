@@ -58,6 +58,9 @@ public:
     string cloudFilterName;
     double velodyneHeight;
 
+    int startIndex;
+    int readNum;
+
     PM::DataPointsFilters cloudFilters;
 
     double matchThreshold;
@@ -99,7 +102,9 @@ gridMapping::gridMapping(ros::NodeHandle& n):
     loadPoseName(getParam<string>("loadPoseName", ".")),
     cloudFilterName(getParam<string>("cloudFilterName", ".")),
     transformation(PM::get().REG(Transformation).create("RigidTransformation")),
-    velodyneHeight(getParam<double>("velodyneHeight", 0))
+    velodyneHeight(getParam<double>("velodyneHeight", 0)),
+    readNum(getParam<int>("readNum", 0)),
+    startIndex(getParam<int>("startIndex", 0))
 {
     gridPublisher = n.advertise<grid_map_msgs::GridMap>("grid_map", 1, true);
     velodynePublisher = n.advertise<sensor_msgs::PointCloud2>("velodyne_cloud", 2, true);
@@ -127,7 +132,7 @@ gridMapping::gridMapping(ros::NodeHandle& n):
     }
     in.close();
 
-    for(int index=0; index<3000; index++)
+    for(int index=startIndex; index<startIndex+readNum; index++)
     {
         this->cumulation(index);
     }

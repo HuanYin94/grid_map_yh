@@ -4,10 +4,10 @@
 s
     <param name="slopeCritical" value="1"/>
 
-    <param name="stepCritical" value="0.15"/>
-    <param name="stepRadiusFirst" value="1.2"/>
-    <param name="stepRadiusSecond" value="1.2"/>
-    <param name="cellsCritical" value="8.0"/>s
+    <param name="stepCritical" value="0.6"/>
+    <param name="stepRadiusFirst" value="0.6"/>
+    <param name="stepRadiusSecond" value="0.6"/>
+    <param name="cellsCritical" value="20.0"/>s
 
   </node>
 

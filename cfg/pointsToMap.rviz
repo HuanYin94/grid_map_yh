@@ -16,7 +16,6 @@ Panels:
         - /Map1/Position1
         - /Map1/Orientation1
         - /Path1
-        - /Path1/Status1
         - /Path1/Offset1
       Splitter Ratio: 0.611465
     Tree Height: 825
@@ -38,7 +37,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: ""
+    SyncSource: PointCloud2
 Visualization Manager:
   Class: ""
   Displays:
@@ -245,16 +244,16 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 145.975
+      Distance: 117.155
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -1.11306
-        Y: 0.29593
-        Z: -68.512
+        X: 11.7383
+        Y: 4.42376
+        Z: -68.4999
       Name: Current View
       Near Clip Distance: 0.01
       Pitch: 1.5698
@@ -278,5 +277,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 939
-  X: 930
+  X: 910
   Y: 14

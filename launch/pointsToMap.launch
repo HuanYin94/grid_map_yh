@@ -5,9 +5,12 @@
 	<param name="matchThreshold" value="0.1"/>
 	<param name="size0" value="15"/>
     <param name="size1" value="15"/>
-    <param name="resolution" value ="0.4"/>
+    <param name="resolution" value ="0.5"/>
 	<param name="robotHeight" value="1.0"/>
-	<param name="velodyneHeight" value="0.5"/>
+	<param name="velodyneHeight" value="1.1"/>
+
+	<param name="readNum" value="1000"/>
+	<param name="startIndex" value="0"/>
 	
 	<param name="cloudFilterName" value="$(find grid_map_yh)/cfg/localCloudFilter.yaml"/>
 	<param name="loadVelodyneDirName" value="/media/yh/YH/DataSet/YQ21/2017_03_09/2017_03_09_drive_0004_sync/velodyne_points/PC090004VTK/"/>	

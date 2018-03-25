@@ -45,6 +45,9 @@ void pP::AStar::pathPlanner(const nav_msgs::OccupancyGrid& occuMapIn)
 {
     cout<<"-----------------------------------"<<endl;
 
+    //haha, don't forget
+    occus.clear();
+
     // build the map: occus & frees
     int count = 0;
     for(int m=0; m<mapSize; m++)
@@ -58,12 +61,14 @@ void pP::AStar::pathPlanner(const nav_msgs::OccupancyGrid& occuMapIn)
             //turns to 2D coordinate in a plane
             Vec2i coord = {mapSize-m, n};
 
-            if(a > 0)
+            if(a != 100) // full traversability check
                 occus.push_back(coord);
 
         }
-//        cout<<""<<endl;
+//        cout<<"------------------"<<endl;
     }
+
+    cout<<"occuNum: "<<occus.size()<<endl;
 
     //start to find the path
     // robot start at the centric
@@ -95,7 +100,7 @@ void pP::AStar::pathPlanner(const nav_msgs::OccupancyGrid& occuMapIn)
                 continue;
             }
 
-            uint totalCost = currentNode->G + ((i < 4) ? 10 : 14);
+            uint totalCost = currentNode->G + ((i < 4) ? 2 : 4);
 
             Node *successor = findNodeOnList(nextNodes, newCoord);
             if (successor == nullptr)
@@ -120,14 +125,14 @@ void pP::AStar::pathPlanner(const nav_msgs::OccupancyGrid& occuMapIn)
         path.push_back(currentNode->coordinates);
         currentNode = currentNode->parent;
     }
-
-
-//    this->releaseNodes(nextNodes);
-//    this->releaseNodes(pathNodes);
-    nextNodes.clear();
-    pathNodes.clear();
+    cout<<"pathNum: "<<path.size()<<endl;
 
     this->drawPath(path);
+
+    this->releaseNodes(nextNodes);
+    this->releaseNodes(pathNodes);
+//    nextNodes.clear();
+//    pathNodes.clear();
 
 }
 
@@ -178,18 +183,21 @@ void pP::AStar::drawPath(std::vector<Vec2i> path)
     pathShow.header.stamp = ros::Time::now();
 
     // Coord-transform, resolution added
+    // robot coordinate & my coordinate
     for(int i=0; i<path.size(); i++)
     {
         geometry_msgs::PoseStamped pose;
         pose.header.frame_id = pathShow.header.frame_id;
         pose.header.stamp = pathShow.header.stamp;
-        pose.pose.position.x = (path.at(i).x - mapSize/2)*resolution;
-        pose.pose.position.y = (path.at(i).y - mapSize/2)*resolution;
+        pose.pose.position.x = (path.at(i).y - mapSize/2)*resolution;
+        pose.pose.position.y = (mapSize/2 - path.at(i).x)*resolution;
         pose.pose.position.z = 0;
         pose.pose.orientation = tf::createQuaternionMsgFromYaw(0);  // always 0;
         pathShow.poses.push_back(pose);
-    }
 
+//        cout<<pose.pose.position.x<<"   "<<pose.pose.position.y<<endl;
+    }
+    cout<<"pointsNum:   "<<pathShow.poses.size()<<endl;
     pathPointsPub.publish(pathShow);
 
 }

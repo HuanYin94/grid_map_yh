@@ -55,7 +55,11 @@ public:
     string loadVelodyneDirName;
     string loadPoseName;
     double velodyneHeight;
+
+    // extra
     int readNum;
+    int startIndex;
+
 
     vector<vector<double>> robotPoses;
     tf::TransformBroadcaster tfBroadcaster;
@@ -88,7 +92,8 @@ gridMapping::gridMapping(ros::NodeHandle& n):
     loadPoseName(getParam<string>("loadPoseName", ".")),
     transformation(PM::get().REG(Transformation).create("RigidTransformation")),
     velodyneHeight(getParam<double>("velodyneHeight", 0)),
-    readNum(getParam<int>("readNum", 0))
+    readNum(getParam<int>("readNum", 0)),
+    startIndex(getParam<int>("startIndex", 0))
 {
     gridPublisher = n.advertise<grid_map_msgs::GridMap>("grid_map", 1, true);
     velodynePublisher = n.advertise<sensor_msgs::PointCloud2>("velodyne_cloud", 2, true);
@@ -112,7 +117,7 @@ gridMapping::gridMapping(ros::NodeHandle& n):
     in.close();
 
     // one by one frame
-    for(int index=0; index<readNum; index++)
+    for(int index=startIndex; index<startIndex+readNum; index++)
     {
         this->update(index);
     }
