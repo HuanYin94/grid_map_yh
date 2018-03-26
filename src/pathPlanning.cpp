@@ -68,7 +68,7 @@ void pP::AStar::pathPlanner(const nav_msgs::OccupancyGrid& occuMapIn)
 //        cout<<"------------------"<<endl;
     }
 
-    cout<<"occuNum: "<<occus.size()<<endl;
+//    cout<<"occuNum: "<<occus.size()<<endl;
 
     //start to find the path
     // robot start at the centric
@@ -125,7 +125,6 @@ void pP::AStar::pathPlanner(const nav_msgs::OccupancyGrid& occuMapIn)
         path.push_back(currentNode->coordinates);
         currentNode = currentNode->parent;
     }
-    cout<<"pathNum: "<<path.size()<<endl;
 
     this->drawPath(path);
 
@@ -197,7 +196,7 @@ void pP::AStar::drawPath(std::vector<Vec2i> path)
 
 //        cout<<pose.pose.position.x<<"   "<<pose.pose.position.y<<endl;
     }
-    cout<<"pointsNum:   "<<pathShow.poses.size()<<endl;
+//    cout<<"pointsNum:   "<<pathShow.poses.size()<<endl;
     pathPointsPub.publish(pathShow);
 
 }

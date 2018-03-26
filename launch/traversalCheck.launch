@@ -4,7 +4,7 @@
 s
     <param name="slopeCritical" value="1"/>
 
-    <param name="stepCritical" value="0.6"/>
+    <param name="stepCritical" value="0.2"/>
     <param name="stepRadiusFirst" value="0.6"/>
     <param name="stepRadiusSecond" value="0.6"/>
     <param name="cellsCritical" value="20.0"/>s

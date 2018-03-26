@@ -8,8 +8,8 @@
 	<param name="robotHeight" value="1.0"/>
 	<param name="velodyneHeight" value="1.1"/>
 
-	<param name="readNum" value="1000"/>
-	<param name="startIndex" value="100"/>
+	<param name="readNum" value="3000"/>
+	<param name="startIndex" value="1300"/>
 	
 	<param name="loadVelodyneDirName" value="/media/yh/YH/DataSet/YQ21/2017_03_09/2017_03_09_drive_0004_sync/velodyne_points/PC090004VTK/"/>	
 	<param name="loadPoseName" value="/media/yh/YH/DataSet/YQ21/2017_03_09/2017_03_09_drive_0004_sync/icp/icp.txt"/>
