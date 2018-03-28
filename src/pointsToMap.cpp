@@ -171,7 +171,7 @@ void gridMapping::cumulation(int index)
     double t0 = ros::Time::now().toSec();
 
     // if needs initiliazation
-    if(index==0)
+    if(index==startIndex)
     {
         // copy the velodyne to localMapCloud
         localMapCloud = velodyneCloud;
@@ -299,6 +299,8 @@ int main(int argc, char** argv)
   ros::NodeHandle n;
 
   gridMapping gridmapping(n);
+
+  ros::spin();
 
   return 0;
 }

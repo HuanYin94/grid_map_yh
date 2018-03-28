@@ -34,7 +34,7 @@ pP::AStar::AStar(ros::NodeHandle& n):
     mapSize = size0/resolution;
     directionCount = enableCross ? 8 : 4;
     source = {mapSize/2, mapSize/2};
-    target = {mapSize/2, mapSize};
+    target = {mapSize, mapSize/2};
 
     occuMapSub = n.subscribe("occuMap", 10, &AStar::pathPlanner, this);
     pathPointsPub = n.advertise<nav_msgs::Path>("pathPoints", 2, true);
@@ -137,8 +137,8 @@ void pP::AStar::pathPlanner(const nav_msgs::OccupancyGrid& occuMapIn)
 
 bool pP::AStar::isCollision(Vec2i coord)
 {
-    if( coord.x > mapSize || coord.x <= 0 ||
-        coord.y > mapSize || coord.y <= 0 ||
+    if( coord.x >= mapSize || coord.x < 0 ||
+        coord.y >= mapSize || coord.y < 0 ||
         std::find(occus.begin(), occus.end(), coord) != occus.end())
         return true;
     else

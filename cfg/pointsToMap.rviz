@@ -14,6 +14,7 @@ Panels:
         - /Map1
         - /Map1/Position1
         - /Map1/Orientation1
+        - /PointCloud23
         - /Path1
         - /Path1/Offset1
       Splitter Ratio: 0.611465
@@ -42,9 +43,9 @@ Visualization Manager:
   Displays:
     - Class: rviz/Axes
       Enabled: true
-      Length: 3
+      Length: 2
       Name: Axes
-      Radius: 0.6
+      Radius: 0.4
       Reference Frame: robot
       Value: true
     - Alpha: 1
@@ -134,7 +135,7 @@ Visualization Manager:
       Show Grid Lines: true
       Topic: /grid_map_travelChecked
       Unreliable: false
-      Use Rainbow: true
+      Use Rainbow: false
       Value: true
     - Alpha: 1
       Autocompute Intensity Bounds: true
@@ -178,7 +179,7 @@ Visualization Manager:
       Color: 255; 255; 255
       Color Transformer: FlatColor
       Decay Time: 0
-      Enabled: false
+      Enabled: true
       Invert Rainbow: false
       Max Color: 255; 255; 255
       Max Intensity: 4096
@@ -189,13 +190,13 @@ Visualization Manager:
       Queue Size: 10
       Selectable: true
       Size (Pixels): 3
-      Size (m): 0.2
+      Size (m): 0.1
       Style: Flat Squares
       Topic: /map_cloud
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
-      Value: false
+      Value: true
     - Alpha: 1
       Buffer Length: 2
       Class: rviz/Path
@@ -243,22 +244,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 137.018
+      Distance: 108.648
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 24.1898
-        Y: 110.699
-        Z: -72.0673
+        X: 27.3533
+        Y: -21.263
+        Z: -66.9677
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 1.5698
+      Pitch: 1.2948
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.09501
+      Yaw: 2.10501
     Saved: ~
 Window Geometry:
   Displays:
@@ -276,5 +277,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 1410
-  X: 399
+  X: 301
   Y: 14

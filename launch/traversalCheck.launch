@@ -2,9 +2,9 @@
   <!-- Launch the grid map tutorial demo node -->
   <node pkg="grid_map_yh" type="traversalCheck" name="traversalCheck" output="screen" >
 s
-    <param name="slopeCritical" value="1"/>
+    <param name="slopeCritical" value="0.3"/>
 
-    <param name="stepCritical" value="0.2"/>
+    <param name="stepCritical" value="1.0"/>
     <param name="stepRadiusFirst" value="0.6"/>
     <param name="stepRadiusSecond" value="0.6"/>
     <param name="cellsCritical" value="20.0"/>s

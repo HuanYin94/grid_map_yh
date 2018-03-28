@@ -2,7 +2,7 @@
   <!-- Launch the grid map tutorial demo node -->
   <node pkg="grid_map_yh" type="pathPlanning" name="pathPlanning" output="screen" >
   
-	<param name="size0" value="20"/>
+	<param name="size0" value="10"/>
     <param name="resolution" value ="0.2"/>
     <param name="enableCross" value="true"/>
 

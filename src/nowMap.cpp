@@ -214,5 +214,7 @@ int main(int argc, char** argv)
 
   gridMapping gridmapping(n);
 
+  ros::spin();
+
   return 0;
 }
