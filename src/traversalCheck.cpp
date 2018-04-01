@@ -75,29 +75,6 @@ void Traversability::check(const grid_map_msgs::GridMap& gridMapIn)
     grid_map::GridMap localGridMap;
     GridMapRosConverter::fromMessage(gridMapIn, localGridMap);
 
-    /*
-    /// slope check
-    localGridMap.add("traversability_slope", Matrix::Zero(localGridMap.getSize()(0), localGridMap.getSize()(1)));
-    double slope, slopeMax = 0.0;
-    for (GridMapIterator it(localGridMap);!it.isPastEnd(); ++it)
-    {
-        // Check if there is a surface normal (empty cell).
-        if (!localGridMap.isValid(*it, "normal_z"))
-            continue;
-        // Compute slope from surface normal z
-        slope = acos(localGridMap.at("normal_z", *it));
-
-        if (slope < slopeCritical) {
-          localGridMap.at("traversability_slope", *it) = 1.0 - slope / slopeCritical;
-        }
-        else {
-          localGridMap.at("traversability_slope", *it) = 0.0;
-        }
-
-        if (slope > slopeMax) slopeMax = slope; // slopeMax can be used for cout
-    }
-    */
-
     /// step check
     /// from ethz_asl step_filter of traversability estimation
     localGridMap.add("traversability_step");

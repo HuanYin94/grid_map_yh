@@ -1,0 +1,19 @@
+<launch>
+  <!-- Launch the grid map tutorial demo node -->
+  <node pkg="grid_map_yh" type="realTimeMapping" name="realTimeMapping" output="screen" >
+  
+	<param name="matchThreshold" value="0.1"/>
+	<param name="size0" value="10"/>
+    <param name="size1" value="10"/>
+    <param name="resolution" value ="0.2"/>
+	<param name="robotHeight" value="1.0"/>
+	<param name="velodyneHeight" value="1.1"/>
+	
+	<param name="cloudFilterName" value="$(find grid_map_yh)/cfg/localCloudFilter.yaml"/>
+    <param name="robotFrame" value="velodyne"/>
+    <param name="globalFrame" value="world"/>
+
+
+  </node>
+
+</launch>

@@ -6,6 +6,8 @@
     <param name="resolution" value ="0.2"/>
     <param name="enableCross" value="true"/>
 
+　　　　<param name="robotFrame" value="velodyne"/>
+
 
   </node>
 

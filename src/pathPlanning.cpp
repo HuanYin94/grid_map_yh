@@ -29,7 +29,8 @@ pP::AStar::AStar(ros::NodeHandle& n):
     n(n),
     size0(getParam<double>("size0", 0)),
     resolution(getParam<double>("resolution", 0)),
-    enableCross(getParam<bool>("enableCross", 0))
+    enableCross(getParam<bool>("enableCross", 0)),
+    robotFrame(getParam<string>("robotFrame", "."))
 {
     mapSize = size0/resolution;
     directionCount = enableCross ? 8 : 4;
@@ -178,7 +179,7 @@ void pP::AStar::releaseNodes(std::set<Node*>& nodes)
 void pP::AStar::drawPath(std::vector<Vec2i> path)
 {
     nav_msgs::Path pathShow;
-    pathShow.header.frame_id = "robot";
+    pathShow.header.frame_id = robotFrame;
     pathShow.header.stamp = ros::Time::now();
 
     // Coord-transform, resolution added

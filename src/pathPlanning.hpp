@@ -70,6 +70,7 @@ namespace pP
         double size0;
         double resolution;
         int mapSize;
+        string robotFrame;
 
         void pathPlanner(const nav_msgs::OccupancyGrid& occuMapIn);
         uint euclidean(Vec2i source, Vec2i target);
