@@ -212,7 +212,7 @@ void gridMapping::gridMapper(DP cloudIn)
     // create the grid map
     // robot centric
     grid_map::GridMap localGridMap({"elevation", "normal_x", "normal_y", "normal_z"});
-    localGridMap.setFrameId("robot");
+    localGridMap.setFrameId(robotFrame);
     localGridMap.setGeometry(Length(size0, size1), resolution, Position(0, 0));
     localGridMap.add("elevation", -velodyneHeight);
     localGridMap.add("update", 0);
