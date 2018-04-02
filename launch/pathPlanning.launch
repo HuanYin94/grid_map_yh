@@ -4,9 +4,9 @@
   
 	<param name="size0" value="10"/>
     <param name="resolution" value ="0.2"/>
-    <param name="enableCross" value="true"/>
+    <param name="enableCross" value="false"/>
 
-　　　　<param name="robotFrame" value="velodyne"/>
+　　　　<param name="robotFrame" value="robot"/>
 
 
   </node>

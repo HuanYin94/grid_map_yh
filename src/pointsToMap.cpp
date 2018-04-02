@@ -253,15 +253,12 @@ void gridMapping::gridMapper(DP cloudIn)
     localGridMap.add("update", 0);
 
     // transfer the 3D point cloud to the grid map of elevation / normal_z
-    int cnt = 0;
     for(int p=0; p<cloudIn.features.cols(); p++)
     {
         Index index;
         Position position(cloudIn.features(0, p), cloudIn.features(1, p));
         if (!localGridMap.getIndex(position, index) || cloudIn.features(2, p)>robotHeight)
             continue;   // Skip this point if it does not lie within the elevation map and above the robot Height
-
-        cnt++;
 
         if(cloudIn.features(2, p) < -velodyneHeight)
             cloudIn.features(2, p) = -velodyneHeight;
@@ -286,7 +283,6 @@ void gridMapping::gridMapper(DP cloudIn)
 
     }
 
-    cout<<"CNT: "<<cnt<<endl;
     // Publish grid map & cloud
     grid_map_msgs::GridMap message;
     GridMapRosConverter::toMessage(localGridMap, message);

@@ -35,7 +35,7 @@ pP::AStar::AStar(ros::NodeHandle& n):
     mapSize = size0/resolution;
     directionCount = enableCross ? 8 : 4;
     source = {mapSize/2, mapSize/2};
-    target = {mapSize, mapSize/2};
+    target = {mapSize-1, mapSize/2};
 
     occuMapSub = n.subscribe("occuMap", 10, &AStar::pathPlanner, this);
     pathPointsPub = n.advertise<nav_msgs::Path>("pathPoints", 2, true);
@@ -71,6 +71,7 @@ void pP::AStar::pathPlanner(const nav_msgs::OccupancyGrid& occuMapIn)
 
 //    cout<<"occuNum: "<<occus.size()<<endl;
 
+
     //start to find the path
     // robot start at the centric
     Node *currentNode  = nullptr;
@@ -101,7 +102,7 @@ void pP::AStar::pathPlanner(const nav_msgs::OccupancyGrid& occuMapIn)
                 continue;
             }
 
-            uint totalCost = currentNode->G + ((i < 4) ? 2 : 4);
+            uint totalCost = currentNode->G + ((i < 4) ? 0.8 : 1.2);
 
             Node *successor = findNodeOnList(nextNodes, newCoord);
             if (successor == nullptr)
@@ -120,9 +121,19 @@ void pP::AStar::pathPlanner(const nav_msgs::OccupancyGrid& occuMapIn)
 
     }
 
+    if(isCollision(target))
+    {
+        // if collision happened, stay in the center
+        for (auto node : pathNodes){
+            if (node->getScore() <= currentNode->getScore() && node->getScore() != 0) {
+                currentNode = node;}  //
+        }
+    }
+
     std::vector<Vec2i> path;
     while (currentNode != nullptr)
     {
+//        cout<<"G:   "<<currentNode->G<<"  H:    "<<currentNode->H<<endl;
         path.push_back(currentNode->coordinates);
         currentNode = currentNode->parent;
     }
@@ -164,7 +175,7 @@ pP::Vec2i pP::AStar::getDelta(Vec2i source, Vec2i target)
 pP::uint pP::AStar::euclidean(Vec2i source, Vec2i target)
 {
     auto delta = std::move(getDelta(source, target));
-    return static_cast<uint>(10 * sqrt(pow(delta.x, 2) + pow(delta.y, 2)));
+    return static_cast<uint>(sqrt(pow(delta.x, 2) + pow(delta.y, 2)));
 }
 
 void pP::AStar::releaseNodes(std::set<Node*>& nodes)
