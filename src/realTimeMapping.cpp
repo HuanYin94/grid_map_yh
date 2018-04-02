@@ -122,14 +122,21 @@ void gridMapping::cumulation(const sensor_msgs::PointCloud2& cloudMsgIn)
     DP velodyneCloud = PointMatcher_ros::rosMsgToPointMatcherCloud<float>(cloudMsgIn);
 
     // listen to the real time trandformation form robot to world
-    TrobotToGlobal = PointMatcher_ros::eigenMatrixToDim<float>(
-            PointMatcher_ros::transformListenerToEigenMatrix<float>(
-            tfListener,
-            globalFrame,
-            robotFrame,
-            cloudMsgIn.header.stamp
-        ), 4);
-
+    try
+    {
+        TrobotToGlobal = PointMatcher_ros::eigenMatrixToDim<float>(
+                PointMatcher_ros::transformListenerToEigenMatrix<float>(
+                tfListener,
+                globalFrame,
+                robotFrame,
+                cloudMsgIn.header.stamp
+            ), 4);
+    }
+    catch (exception& e)
+    {
+        cout << e.what() << endl;
+        return;
+    }
 
     // publish
     double t0 = ros::Time::now().toSec();
