@@ -37,6 +37,8 @@ pP::AStar::AStar(ros::NodeHandle& n):
     source = {mapSize/2, mapSize/2};
     target = {mapSize-1, mapSize/2};
 
+
+
     occuMapSub = n.subscribe("occuMap", 10, &AStar::pathPlanner, this);
     pathPointsPub = n.advertise<nav_msgs::Path>("pathPoints", 2, true);
 
