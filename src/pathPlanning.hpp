@@ -52,6 +52,7 @@ namespace pP
         ros::Subscriber occuMapSub;
         nav_msgs::OccupancyGrid occuMap;
         ros::Publisher pathPointsPub;
+        ros::Subscriber targetSub;
 
         std::vector<Vec2i> occus;
 
@@ -71,8 +72,10 @@ namespace pP
         double resolution;
         int mapSize;
         string robotFrame;
+        string targetMsgName;
 
-        void pathPlanner(const nav_msgs::OccupancyGrid& occuMapIn);
+        void pathPlanner(const geometry_msgs::PoseStamped targetIn);
+        void getoccuMap(const nav_msgs::OccupancyGrid occuMapIn);
         uint euclidean(Vec2i source, Vec2i target);
         bool isCollision(Vec2i coord);
         Node* findNodeOnList(std::set<Node*>& nodes, Vec2i coord);

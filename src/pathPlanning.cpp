@@ -30,24 +30,22 @@ pP::AStar::AStar(ros::NodeHandle& n):
     size0(getParam<double>("size0", 0)),
     resolution(getParam<double>("resolution", 0)),
     enableCross(getParam<bool>("enableCross", 0)),
-    robotFrame(getParam<string>("robotFrame", "."))
+    robotFrame(getParam<string>("robotFrame", ".")),
+    targetMsgName(getParam<string>("targetMsgName", "."))
 {
     mapSize = size0/resolution;
     directionCount = enableCross ? 8 : 4;
-    source = {mapSize/2, mapSize/2};
-    target = {mapSize-1, mapSize/2};
+    source = {mapSize/2, mapSize/2}; // always start at the center of the robot
 
+    targetSub = n.subscribe(targetMsgName, 10, &AStar::pathPlanner, this);
+    occuMapSub = n.subscribe("occuMap", 10, &AStar::getoccuMap, this);
 
-
-    occuMapSub = n.subscribe("occuMap", 10, &AStar::pathPlanner, this);
     pathPointsPub = n.advertise<nav_msgs::Path>("pathPoints", 2, true);
 
 }
 
-void pP::AStar::pathPlanner(const nav_msgs::OccupancyGrid& occuMapIn)
+void pP::AStar::getoccuMap(const nav_msgs::OccupancyGrid occuMapIn)
 {
-    cout<<"-----------------------------------"<<endl;
-
     //haha, don't forget
     occus.clear();
 
@@ -73,8 +71,28 @@ void pP::AStar::pathPlanner(const nav_msgs::OccupancyGrid& occuMapIn)
 
 //    cout<<"occuNum: "<<occus.size()<<endl;
 
+}
 
-    //start to find the path
+void pP::AStar::pathPlanner(const geometry_msgs::PoseStamped targetIn)
+{
+    cout<<"-----------------------------------"<<endl;    
+
+    // judgement: whether the occpuMap exist
+    if(occus.size() == 0 )
+    {
+        cout<<"No Occu Map exists!"<<endl;
+        return;
+    }
+
+    // judgement: whether the target is in the map
+    target = {(int)targetIn.pose.position.x, (int)targetIn.pose.position.y};
+    if(abs(target.x) > mapSize/2 || abs(target.y) > mapSize/2)
+    {
+        cout<<"The target is OUT of the map!"<<endl;
+        return;
+    }
+
+    //start to find the path, A-star
     // robot start at the centric
     Node *currentNode  = nullptr;
     nextNodes.insert(new Node(source));
@@ -82,13 +100,17 @@ void pP::AStar::pathPlanner(const nav_msgs::OccupancyGrid& occuMapIn)
     while(!nextNodes.empty())
     {
         currentNode = *nextNodes.begin();
-        for (auto node : nextNodes) {
-            if (node->getScore() <= currentNode->getScore()) {
+        for (auto node : nextNodes)
+        {
+            if (node->getScore() <= currentNode->getScore())
+            {
                 currentNode = node;
             }
         }
 
-        if (currentNode->coordinates == target) {
+        // break if reaches the goal
+        if (currentNode->coordinates == target)
+        {
             break;
         }
 
@@ -125,7 +147,7 @@ void pP::AStar::pathPlanner(const nav_msgs::OccupancyGrid& occuMapIn)
 
     if(isCollision(target))
     {
-        // if collision happened, stay in the center
+        // if collision happened, find a closer path in the whites
         for (auto node : pathNodes){
             if (node->getScore() <= currentNode->getScore() && node->getScore() != 0) {
                 currentNode = node;}  //
@@ -144,8 +166,6 @@ void pP::AStar::pathPlanner(const nav_msgs::OccupancyGrid& occuMapIn)
 
     this->releaseNodes(nextNodes);
     this->releaseNodes(pathNodes);
-//    nextNodes.clear();
-//    pathNodes.clear();
 
 }
 
