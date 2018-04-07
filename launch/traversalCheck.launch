@@ -7,7 +7,9 @@ s
     <param name="stepCritical" value="1.0"/>
     <param name="stepRadiusFirst" value="0.6"/>
     <param name="stepRadiusSecond" value="0.6"/>
-    <param name="cellsCritical" value="20.0"/>s
+    <param name="cellsCritical" value="20.0"/>
+
+	<param name="boundCritical" value="6"/>
 
   </node>
 
