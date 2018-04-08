@@ -43,7 +43,8 @@ public:
     double stepRadiusFirst;
     double stepRadiusSecond;
     int cellsCritical;
-    int boundCritical;
+    double boundCritical;
+    int boundDiffNum;
 
     void check(const grid_map_msgs::GridMap& gridMapIn);
 
@@ -62,7 +63,8 @@ Traversability::Traversability(ros::NodeHandle& n):
     stepRadiusFirst(getParam<double>("stepRadiusFirst", 0)),
     stepRadiusSecond(getParam<double>("stepRadiusSecond", 0)),
     cellsCritical(getParam<int>("cellsCritical", 0)),
-    boundCritical(getParam<int>("boundCritical", 0))
+    boundCritical(getParam<double>("boundCritical", 0)),
+    boundDiffNum(getParam<int>("boundDiffNum", 0))
 {
     gridPublisher = n.advertise<grid_map_msgs::GridMap>("grid_map_travelChecked", 1, true);
     occuMapPublisher = n.advertise<nav_msgs::OccupancyGrid>("occuMap", 1, true);
@@ -151,11 +153,11 @@ void Traversability::check(const grid_map_msgs::GridMap& gridMapIn)
           nCells++;
 
         // can be noted
-        localGridMap.at("step_height", *submapIterator)>0?hillCount++:flatCount++;
+        localGridMap.at("step_height", *submapIterator)>boundCritical?hillCount++:flatCount++;
       }
 
       // can be noted, for boundary line
-      if(flatCount > 0 && hillCount > 0 && abs(flatCount-hillCount) <= boundCritical)
+      if(flatCount > 0 && hillCount > 0 && abs(flatCount-hillCount) <= boundDiffNum)
             localGridMap.at("boundary_line", *iterator) = 1;
       else
             localGridMap.at("boundary_line", *iterator) = 0;
