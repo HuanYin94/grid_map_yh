@@ -138,7 +138,7 @@ void Traversability::check(const grid_map_msgs::GridMap& gridMapIn)
       Eigen::Vector2d center;
       localGridMap.getPosition(*iterator, center);
 
-      // Compute the traversability and the boundary, according to the step_height.
+      // Compute the traversability and the boundary of slopes, according to the step_height.
       for (CircleIterator submapIterator(localGridMap, center, stepRadiusSecond);
           !submapIterator.isPastEnd(); ++submapIterator)
       {
