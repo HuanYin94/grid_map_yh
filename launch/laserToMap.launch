@@ -8,7 +8,10 @@
 	<param name="robotHeight" value="1.0"/>
 	<param name="velodyneHeight" value="1.1"/>
 
-	<param name="readNum" value="2000"/>
+	<param name="fillRadius" value="1.2"/>
+	<param name="rangeRadius" value="2.5"/>
+
+	<param name="readNum" value="220"/>
 	<param name="startIndex" value="0"/>
 	
 	<param name="loadVelodyneDirName" value="/media/yh/YH/DataSet/YQ21/2017_03_09/2017_03_09_drive_0004_sync/velodyne_points/PC090004VTK/"/>	

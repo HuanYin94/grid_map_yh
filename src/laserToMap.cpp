@@ -5,7 +5,7 @@
 #include <cmath>
 #include <limits>
 #include <fstream>
-
+#include <numeric>
 
 #include "pointmatcher/PointMatcher.h"
 #include "pointmatcher/Timer.h"
@@ -54,6 +54,8 @@ public:
     double velodyneHeight;
     string loadVelodyneDirName;
     string loadPoseName;
+    double fillRadius;
+    double rangeRadius;
 
     vector<vector<double>> robotPoses;
     tf::TransformBroadcaster tfBroadcaster;
@@ -70,6 +72,8 @@ public:
     void update(int index);
 
     void gridMapper(DP cloudIn);
+
+    bool isInRange(Eigen::Vector2d center);
 
 private:
 
@@ -90,7 +94,9 @@ gridMapping::gridMapping(ros::NodeHandle& n):
     loadPoseName(getParam<string>("loadPoseName", ".")),
     transformation(PM::get().REG(Transformation).create("RigidTransformation")),
     readNum(getParam<int>("readNum", 0)),
-    startIndex(getParam<int>("startIndex", 0))
+    startIndex(getParam<int>("startIndex", 0)),
+    fillRadius(getParam<double>("fillRadius", 0)),
+    rangeRadius(getParam<double>("rangeRadius", 0))
 {
     gridPublisher = n.advertise<grid_map_msgs::GridMap>("grid_map", 1, true);
     velodynePublisher = n.advertise<sensor_msgs::PointCloud2>("velodyne_cloud", 2, true);
@@ -192,6 +198,39 @@ void gridMapping::gridMapper(DP cloudIn)
             }
 
         }
+    }
+
+    // Those that without update,average filter them
+    // travel the map
+    for(GridMapIterator iterator(localGridMap); !iterator.isPastEnd(); ++iterator)
+    {
+
+        // measurement, continue
+        if(localGridMap.at("update", *iterator) == 1)
+            continue;
+
+        Eigen::Vector2d center;
+        localGridMap.getPosition(*iterator, center);
+
+        // do not operate he nearest ones, for the person
+        if()
+
+        // initial
+        vector<double> measureEle;
+
+        for (CircleIterator submapIterator(localGridMap, center, fillRadius);
+            !submapIterator.isPastEnd(); ++submapIterator)
+        {
+            if (localGridMap.at("update", *submapIterator) == 1)
+                measureEle.push_back(localGridMap.at("elevation", *submapIterator));
+        }
+
+        if(measureEle.size() > 0) //has measures?
+        {
+            double sum = accumulate(measureEle.begin(),measureEle.end(),0);
+            localGridMap.at("elevation", *iterator) = sum / measureEle.size();
+            cout<<localGridMap.at("elevation", *iterator)<<endl;
+        }
 
     }
 
@@ -200,6 +239,12 @@ void gridMapping::gridMapper(DP cloudIn)
     grid_map_msgs::GridMap message;
     GridMapRosConverter::toMessage(localGridMap, message);
     gridPublisher.publish(message);
+
+}
+
+
+bool gridMapping::isInRange(Eigen::Vector2d center)
+{
 
 }
 
