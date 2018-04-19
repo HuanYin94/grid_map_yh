@@ -21,14 +21,13 @@
 
 
 /*
- *   update -> gridMapper -> # TODO travelSearch (another node)-> # TODO pathPlanning (another node)
+ *   update the laser map frame by frame
  *
 */
 
 
 using namespace grid_map;
 using namespace std;
-using namespace PointMatcherSupport;
 
 class gridMapping
 {
@@ -52,19 +51,19 @@ public:
     double size1;
     double resolution;
     double robotHeight;
+    double velodyneHeight;
     string loadVelodyneDirName;
     string loadPoseName;
 
     vector<vector<double>> robotPoses;
     tf::TransformBroadcaster tfBroadcaster;
 
+    int startIndex;
+    int readNum;
+
     PM::TransformationParameters TrobotToGlobal;
-    PM::TransformationParameters TrobotLastToGlobal;
-    PM::TransformationParameters TrobotLastToRobot;
-    PM::TransformationParameters TrobotToRobotLast;
 
     DP velodyneCloud;
-    grid_map::GridMap localGridMap;
 
     unique_ptr<PM::Transformation> transformation;
 
@@ -86,18 +85,15 @@ gridMapping::gridMapping(ros::NodeHandle& n):
     size1(getParam<double>("size1", 0)),
     resolution(getParam<double>("resolution", 0)),
     robotHeight(getParam<double>("robotHeight", 0)),
+    velodyneHeight(getParam<double>("velodyneHeight", 0)),
     loadVelodyneDirName(getParam<string>("loadVelodyneDirName", ".")),
     loadPoseName(getParam<string>("loadPoseName", ".")),
-    transformation(PM::get().REG(Transformation).create("RigidTransformation"))
+    transformation(PM::get().REG(Transformation).create("RigidTransformation")),
+    readNum(getParam<int>("readNum", 0)),
+    startIndex(getParam<int>("startIndex", 0))
 {
     gridPublisher = n.advertise<grid_map_msgs::GridMap>("grid_map", 1, true);
     velodynePublisher = n.advertise<sensor_msgs::PointCloud2>("velodyne_cloud", 2, true);
-
-    // init the localGridMap, elevation = 0
-    localGridMap.setFrameId("robot");
-    localGridMap.setGeometry(Length(size0, size1), resolution, Position(0, 0));
-    localGridMap.add("elevation", 0);
-    localGridMap.add("update", 0);
 
     // read initial transformation
     int x, y;
@@ -118,7 +114,7 @@ gridMapping::gridMapping(ros::NodeHandle& n):
     in.close();
 
     // one by one frame
-    for(int index=0; index<3000; index++)
+    for(int index=startIndex; index<startIndex+readNum; index++)
     {
         this->update(index);
     }
@@ -153,30 +149,20 @@ void gridMapping::update(int index)
     tfBroadcaster.sendTransform(PointMatcher_ros::eigenMatrixToStampedTransform<float>(TrobotToGlobal, "global", "robot", ros::Time::now()));
     velodynePublisher.publish(PointMatcher_ros::pointMatcherCloudToRosMsg<float>(velodyneCloud, "robot", ros::Time::now()));
 
-    // if needs initiliazation
-    if(index==0)
-    {
-        TrobotLastToGlobal = TrobotToGlobal;
-    }
-    else
-    {
-        // update velodyne point clouds
-        TrobotToRobotLast = TrobotLastToGlobal.inverse() * TrobotToGlobal;
-        transformation->correctParameters(TrobotToRobotLast);
-
-        if(transformation->checkParameters(TrobotToRobotLast))
-        {
-            velodyneCloud = transformation->compute(velodyneCloud, TrobotToRobotLast);
-        }
-
-    }
-
     this->gridMapper(velodyneCloud);
 
 }
 
 void gridMapping::gridMapper(DP cloudIn)
 {
+
+    // create the grid map
+    // robot centric
+    grid_map::GridMap localGridMap({"elevation", "normal_x", "normal_y", "normal_z"});
+    localGridMap.setFrameId("robot");
+    localGridMap.setGeometry(Length(size0, size1), resolution, Position(0, 0));
+    localGridMap.add("elevation", -velodyneHeight);
+    localGridMap.add("update", 0);
 
     // transfer the 3D point cloud to the grid map of elevation / normal_z
     for(int p=0; p<cloudIn.features.cols(); p++)
@@ -185,6 +171,9 @@ void gridMapping::gridMapper(DP cloudIn)
         Position position(cloudIn.features(0, p), cloudIn.features(1, p));
         if (!localGridMap.getIndex(position, index) || cloudIn.features(2, p)>robotHeight)
             continue;   // Skip this point if it does not lie within the elevation map and above the robot Height
+
+        if(cloudIn.features(2, p) < -velodyneHeight)
+            cloudIn.features(2, p) = -velodyneHeight;
 
         if (!localGridMap.isValid(index))
         {
@@ -206,11 +195,6 @@ void gridMapping::gridMapper(DP cloudIn)
 
     }
 
-    // reset zeros
-    for (GridMapIterator iterator(localGridMap); !iterator.isPastEnd(); ++iterator)
-    {
-        localGridMap.at("update", *iterator) = 0;
-    }
 
     // Publish grid map & cloud
     grid_map_msgs::GridMap message;
