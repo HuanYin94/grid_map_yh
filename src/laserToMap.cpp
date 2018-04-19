@@ -54,8 +54,10 @@ public:
     double velodyneHeight;
     string loadVelodyneDirName;
     string loadPoseName;
+
     double fillRadius;
     double rangeRadius;
+    double groundTolarance;
 
     vector<vector<double>> robotPoses;
     tf::TransformBroadcaster tfBroadcaster;
@@ -96,7 +98,8 @@ gridMapping::gridMapping(ros::NodeHandle& n):
     readNum(getParam<int>("readNum", 0)),
     startIndex(getParam<int>("startIndex", 0)),
     fillRadius(getParam<double>("fillRadius", 0)),
-    rangeRadius(getParam<double>("rangeRadius", 0))
+    rangeRadius(getParam<double>("rangeRadius", 0)),
+    groundTolarance(getParam<double>("groundTolarance", 0))
 {
     gridPublisher = n.advertise<grid_map_msgs::GridMap>("grid_map", 1, true);
     velodynePublisher = n.advertise<sensor_msgs::PointCloud2>("velodyne_cloud", 2, true);
@@ -213,7 +216,8 @@ void gridMapping::gridMapper(DP cloudIn)
         localGridMap.getPosition(*iterator, center);
 
         // do not operate he nearest ones, for the person
-        if()
+        if(this->isInRange(center))
+            continue;
 
         // initial
         vector<double> measureEle;
@@ -227,9 +231,11 @@ void gridMapping::gridMapper(DP cloudIn)
 
         if(measureEle.size() > 0) //has measures?
         {
-            double sum = accumulate(measureEle.begin(),measureEle.end(),0);
-            localGridMap.at("elevation", *iterator) = sum / measureEle.size();
-            cout<<localGridMap.at("elevation", *iterator)<<endl;
+            double sum = std::accumulate(std::begin(measureEle), std::end(measureEle), 0.0);
+            double mean =  sum / measureEle.size();
+            // judge
+            if(abs(mean-localGridMap.at("elevation", *iterator)) > this->groundTolarance)
+                localGridMap.at("elevation", *iterator) = mean;
         }
 
     }
@@ -245,6 +251,12 @@ void gridMapping::gridMapper(DP cloudIn)
 
 bool gridMapping::isInRange(Eigen::Vector2d center)
 {
+    double dis = pow(center(0)-0, 2) + pow(center(1)-0, 2);
+
+    if(dis > this->rangeRadius)
+        return false;
+    else
+        return true;
 
 }
 
