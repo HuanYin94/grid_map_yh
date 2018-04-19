@@ -1,0 +1,15 @@
+<launch>
+  <!-- Launch the grid map tutorial demo node -->
+  <node pkg="grid_map_yh" type="pathPlanning_demo" name="pathPlanning_demo" output="screen" >
+  
+	<param name="size0" value="10"/>
+    <param name="resolution" value ="0.2"/>
+    <param name="enableCross" value="false"/>
+
+　　　　<param name="robotFrame" value="robot"/>
+    <param name="targetMsgName" value="target"/>
+
+
+  </node>
+
+</launch>
