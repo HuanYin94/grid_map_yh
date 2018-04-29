@@ -9,7 +9,7 @@
 	<param name="robotHeight" value="1.0"/>
 	<param name="velodyneHeight" value="1.1"/>
 
-	<param name="readNum" value="175"/>
+	<param name="readNum" value="70"/>
 	<param name="startIndex" value="0"/>
 	
 	<param name="cloudFilterName" value="$(find grid_map_yh)/cfg/localCloudFilter.yaml"/>
