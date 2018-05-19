@@ -96,6 +96,11 @@ add_executable(
 )
 
 add_executable(
+  realTimeLiDAR
+  src/realTimeLiDAR.cpp
+)
+
+add_executable(
   pathPlanning_demo
   src/pathPlanning_demo.cpp
 )
@@ -144,9 +149,16 @@ target_link_libraries(
   ${libpointmatcher_LIBRARIES}
 )
 
+target_link_libraries(
+  realTimeLiDAR
+  ${catkin_LIBRARIES}
+  ${libpointmatcher_LIBRARIES}
+)
+
+
 # Mark executables and/or libraries for installation
 install(
-  TARGETS test_demo pointsToMap traversalCheck laserToMap pathPlanning realTimeMapping
+  TARGETS test_demo pointsToMap traversalCheck laserToMap pathPlanning realTimeMapping realTimeLiDAR
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

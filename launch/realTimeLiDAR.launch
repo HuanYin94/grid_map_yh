@@ -1,0 +1,21 @@
+<launch>
+  <!-- Launch the grid map tutorial demo node -->
+  <node pkg="grid_map_yh" type="realTimeLiDAR" name="realTimeLiDAR" output="screen" >
+  
+	<param name="size0" value="10"/>
+    <param name="size1" value="10"/>
+    <param name="resolution" value ="0.2"/>
+	<param name="robotHeight" value="1.0"/>
+	<param name="velodyneHeight" value="1.1"/>
+
+	<param name="fillRadius" value="0.8"/>
+	<param name="rangeRadius" value="2.5"/>
+	<param name="groundTolarance" value="0.05"/>
+	
+    <param name="robotFrame" value="velodyne"/>
+	<!--No transform actually, so the world frame is not needed-->
+
+
+  </node>
+
+</launch>
