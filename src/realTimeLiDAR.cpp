@@ -35,11 +35,6 @@ class gridMapping
 {
     typedef PointMatcher<float> PM;
     typedef PM::DataPoints DP;
-    typedef PM::Matches Matches;
-
-    // not used ?
-    typedef typename Nabo::NearestNeighbourSearch<float> NNS;
-    typedef typename NNS::SearchType NNSearchType;
 
 public:
     gridMapping(ros::NodeHandle &n);
@@ -61,8 +56,6 @@ public:
     double fillRadius;
     double rangeRadius;
     double groundTolarance;
-
-    shared_ptr<NNS> localMapNNS;
 
     unique_ptr<PM::Transformation> transformation;
 
@@ -152,7 +145,7 @@ void gridMapping::gridMapper(const sensor_msgs::PointCloud2& cloudMsgIn)
         Eigen::Vector2d center;
         localGridMap.getPosition(*iterator, center);
 
-        // do not operate he nearest ones, for the person
+        // do not operate the nearest ones, for the person following the robot!
         if(this->isInRange(center))
             continue;
 
@@ -166,6 +159,7 @@ void gridMapping::gridMapper(const sensor_msgs::PointCloud2& cloudMsgIn)
                 measureEle.push_back(localGridMap.at("elevation", *submapIterator));
         }
 
+        // calculate the mean value fot those not updated!
         if(measureEle.size() > 0) //has measures?
         {
             double sum = std::accumulate(std::begin(measureEle), std::end(measureEle), 0.0);
