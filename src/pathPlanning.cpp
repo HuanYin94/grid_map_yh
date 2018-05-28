@@ -85,7 +85,7 @@ void pP::AStar::pathPlanner(const geometry_msgs::PoseStamped targetIn)
     }
 
     // judgement: whether the target is in the map
-    target = {(int)targetIn.pose.position.x, (int)targetIn.pose.position.y};
+    target = {mapSize/2 - (int)(targetIn.pose.position.y / resolution), (int)(targetIn.pose.position.x / resolution) + mapSize/2};
     if(abs(target.x) > mapSize/2 || abs(target.y) > mapSize/2)
     {
         cout<<"The target is OUT of the map!"<<endl;
