@@ -11,7 +11,7 @@
 	
 	<param name="cloudFilterName" value="$(find grid_map_yh)/cfg/localCloudFilter.yaml"/>
     <param name="robotFrame" value="velodyne"/>
-    <param name="globalFrame" value="world"/>
+    <param name="globalFrame" value="map"/>
 
 
   </node>
