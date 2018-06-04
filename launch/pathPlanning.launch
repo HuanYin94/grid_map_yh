@@ -7,7 +7,7 @@
     <param name="enableCross" value="false"/>
 
 　　　　<param name="robotFrame" value="velodyne"/>
-    <param name="targetMsgName" value="target"/>
+    <param name="targetMsgName" value="/target"/>
 
 
   </node>

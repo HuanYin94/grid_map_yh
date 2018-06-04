@@ -5,11 +5,11 @@
 	<param name="size0" value="10"/>
     <param name="size1" value="10"/>
     <param name="resolution" value ="0.2"/>
-	<param name="robotHeight" value="1.0"/>
-	<param name="velodyneHeight" value="1.1"/>
+	<param name="robotHeight" value="0.2"/>
+	<param name="velodyneHeight" value="1.3"/>
 
-	<param name="fillRadius" value="0.8"/>
-	<param name="rangeRadius" value="2.5"/>
+	<param name="fillRadius" value="0.1"/>
+	<param name="rangeRadius" value="0.1"/>
 	<param name="groundTolarance" value="0.05"/>
 	
     <param name="robotFrame" value="velodyne"/>
