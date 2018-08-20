@@ -15,3 +15,5 @@ A* (& demo to show)
 & demo
 ### realTimeMapping:	make the 'pointsToMap' be real time
 ### realTimeLiDAR:		make the 'laserToMap' be real time
+
+Parameters matter!
