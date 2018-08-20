@@ -1,5 +1,6 @@
 Functional deoms used by Robotics Lab in Zhejiang University.
-Thanks to Ethz-asl: 
+
+Thanks to ANYbotics: https://github.com/ANYbotics/grid_map
 
 ### test_node:			
 simple test on lidar submap
