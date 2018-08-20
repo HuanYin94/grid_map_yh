@@ -17,5 +17,7 @@ Traversability estimation, slope, step and rough
 ### pathPlanning:       
 A* (& demo to show) 
 & demo
-### realTimeMapping:	make the 'pointsToMap' be real time
-### realTimeLiDAR:		make the 'laserToMap' be real time
+### realTimeMapping:	
+make the 'pointsToMap' be real time
+### realTimeLiDAR:		
+make the 'laserToMap' be real time
