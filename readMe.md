@@ -1,4 +1,4 @@
-Functional deoms used by Robotics Lab in Zhejiang University.
+Functional deoms used by Robotics Lab in Zhejiang University, China.
 
 Thanks to ANYbotics: https://github.com/ANYbotics/grid_map
 
@@ -13,5 +13,5 @@ Traversability estimation, slope, step and rough
 ### pathPlanning:       
 A* (& demo to show) 
 & demo
-### realTimeMapping:	make the <pointsToMap> be real time
-### realTimeLiDAR:		make the <laserToMap> be real time
+### realTimeMapping:	make the 'pointsToMap' be real time
+### realTimeLiDAR:		make the 'laserToMap' be real time
