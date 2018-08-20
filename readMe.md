@@ -1,16 +1,16 @@
 Functional deoms used by Robotics Lab in Zhejiang University.
 Thanks to Ethz-asl: 
 
-###test_node:			
+### test_node:			
 simple test on lidar submap
-###pointsToMap:		
+### pointsToMap:		
 sliding map of laser points -> grid map
-###laserToMap:			
+### laserToMap:			
 laser laser transform -> grid map
-###traversalCheck:		
+### traversalCheck:		
 Traversability estimation, slope, step and rough
-###pathPlanning:       
+### pathPlanning:       
 A* (& demo to show) 
 & demo
-###realTimeMapping:	make the <pointsToMap> be real time
-###realTimeLiDAR:		make the <laserToMap> be real time
+### realTimeMapping:	make the <pointsToMap> be real time
+### realTimeLiDAR:		make the <laserToMap> be real time
