@@ -3,7 +3,7 @@ Functional deoms used by Robotics Lab in Zhejiang University, China.
 Thanks to ANYbotics: https://github.com/ANYbotics/grid_map
 
 ```diff
-- Parameters Matter!
+Parameters Matter!
 ```
 
 ### test_node:			
